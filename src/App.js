@@ -1,25 +1,26 @@
 import './index.css'
-import { useState, useEffect } from 'react'
-import { supabase } from './supabaseClient'
-import Auth from './Auth'
-import Account from './Account'
+import {createBrowserRouter, RouterProvider, createRoutesFromElements, Route} from "react-router-dom";
+import RootsLayout from "./layouts/RootsLayout";
+import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
+import MoviesOverview from "./pages/MoviesOverview";
+import Profile from "./pages/Profile";
+
+const router = createBrowserRouter(
+    createRoutesFromElements(
+        <Route path='/' element={<RootsLayout/>}>
+          <Route index element={<Home/>}/>
+          <Route path='profile' element={<Profile/>}/>
+          <Route path='movies' element={<MoviesOverview/>}/>
+
+          <Route path='*' element={<NotFound />} />
+        </Route>
+    )
+)
 
 export default function App() {
-  const [session, setSession] = useState(null)
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-    })
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-  }, [])
 
   return (
-      <div className="container" style={{ padding: '50px 0 100px 0' }}>
-        {!session ? <Auth /> : <Account key={session.user.id} session={session} />}
-      </div>
+      <RouterProvider router={router}/>
   )
 }
