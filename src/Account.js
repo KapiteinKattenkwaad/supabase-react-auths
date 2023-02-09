@@ -29,6 +29,27 @@ const Account = ({session}) => {
         getProfile()
     }, [session])
 
+    const getUsers = async () => {
+        try {
+            let {data, error, status} = await supabase
+                .from("profiles").select("*");
+
+            if (error && status !== 406) {
+                throw error
+            }
+
+            if (data) {
+                console.log(data)
+            }
+        } catch (error) {
+            alert(error.message)
+        } finally {
+        }
+    }
+
+    getUsers()
+
+
     const getProfile = async () => {
         try {
             setLoading(true)
@@ -98,7 +119,12 @@ const Account = ({session}) => {
                         size={150}
                         onUpload={(url) => {
                             setAvatarUrl(url)
-                            updateProfile({username, website, avatar_url: url, liked_movies: liked_movies.map(item => JSON.parse(item))})
+                            updateProfile({
+                                username,
+                                website,
+                                avatar_url: url,
+                                liked_movies: liked_movies.map(item => JSON.parse(item))
+                            })
                         }}
                     />
                     <div>Email: {session.user.email}</div>
@@ -129,27 +155,7 @@ const Account = ({session}) => {
                 </form>
             )}
             <div>
-                {/*<label htmlFor="movies">Movies</label>*/}
-                {/*<input*/}
-                {/*    id="movies"*/}
-                {/*    type="text"*/}
-                {/*    value={liked_movies || ''}*/}
-                {/*    onChange={(e) => addMovie(e.target.value)}*/}
-                {/*/>*/}
-                {/*{*/}
-                {
 
-                    // console.log((JSON.parse(liked_movies)))
-                }
-
-                {/*{*/}
-                {/*    toShowMoves &&*/}
-                {/*    toShowMoves.map((movie) =>*/}
-                {/*        <li key={movie.id}>*/}
-                {/*            {movie.title}*/}
-                {/*        </li>*/}
-                {/*    )*/}
-                {/*}*/}
             </div>
             <ul>
                 {movies.map((movie) => (
